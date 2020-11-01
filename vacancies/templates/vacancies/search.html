@@ -1,0 +1,40 @@
+<body>
+<main class="container mt-3">
+    <section>
+
+        <h1 class="h1 text-center mt-5 mb-4">Поиск вакансий</h1>
+
+        <div class="row">
+            <div class="col-md-7 col-lg-5 col-xl-4 col-sm-8 mx-auto">
+
+                <form action="{% url 'search'%}" class="form-inline sm-form mr-auto mb-4">
+                    <input class="form-control mr-sm-2" type="text" value="{{ query }}" placeholder="Например: ios"
+                           name="s" aria-label="Search">
+                    <button class="btn btn-primary  my-0" type="submit">Найти вакансии</button>
+                </form>
+
+            </div>
+        </div>
+
+
+        <p class="text-center pt-1">Найдено {{ vacancies|length }} вакансий</p>
+        <div class="row mt-5">
+            <div class="col-12 col-lg-8 offset-lg-2 m-auto">
+                {% for vacancy in vacancies %}
+                    {% include 'vacancies/inc/_vacancy_card.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>

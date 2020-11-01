@@ -1,0 +1,27 @@
+{% extends 'vacancies/base.html' %}
+{% load vacancies_tags %}
+
+{% block title %}Вакансии по специальностям - {{ block.super }}{% endblock %}
+{% block body %}
+    <div>
+        {% include 'inc/_check_messages.html' %}
+    </div>
+    <main class="container mt-3">
+        {% back_button request=request %}
+        <section>
+            <div class="text-center">
+                <img src="{{ specialty.picture }}" width="130" height="120" alt="">
+            </div>
+            <h1 class="h1 text-center mx-auto mt-0 pt-1" style="font-size: 70px;"><strong>{{ criteria }}</strong>
+            </h1>
+            <p class="text-center pt-1">Специальность, {{ vacancies|length }} вакансий</p>
+            <div class="row mt-5">
+                <div class="col-12 col-lg-8 offset-lg-2 m-auto">
+                    {% for vacancy in vacancies %}
+                        {% include 'vacancies/inc/_vacancy_card.html' with vacancy=vacancy %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

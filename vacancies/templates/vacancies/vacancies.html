@@ -1,6 +1,11 @@
-{% extends 'base.html' %}
-{% block title %}Все вакансии-{{ block.super }}{% endblock %}
+{% extends 'vacancies/base.html' %}
+
+
+{% block title %}Все вакансии - {{ block.super }}{% endblock %}
 {% block body %}
+    <div>
+        {% include 'inc/_check_messages.html' %}
+    </div>
     <main class="container mt-3">
         <section>
             <h1 class="h1 text-center mx-auto mt-4 pt-5" style="font-size: 70px;"><strong>Все вакансии</strong></h1>

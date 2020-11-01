@@ -13,17 +13,33 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
 
-from vacancies.views import MainPageView, CompanyCardView, custom_404_handler, custom_500_handler
+from vacancies import views
 
-handler404 = custom_404_handler
-handler500 = custom_500_handler
+handler404 = views.custom_404_handler
+handler500 = views.custom_500_handler
 
 urlpatterns = [
-    path('', MainPageView.as_view(), name='home'),
-    path('companies/<int:company_id>', CompanyCardView.as_view(), name='company'),
+    path('', views.MainPageView.as_view(), name='home'),
+    path('', include('authentication.urls')),
+    path('companies/<int:company_id>/', views.CompanyCardView.as_view(), name='company'),
     path('vacancies/', include('vacancies.urls')),
-    path('admin/', admin.site.urls)
+    path('search?s=<str:query>/', views.SearchView.as_view(), name='search'),
+    path('mycompany/', views.MyCompanyStartView.as_view(), name='my_company'),
+    path('mycompany/send', views.MyCompanyCreateView.as_view(), name='create_company'),
+    path('mycompany/edit', views.MyCompanyEdit.as_view(), name='edit_company'),
+    path('mycompany/vacancies/', views.MyVacancies.as_view(), name='my_vacancies'),
+    path('mycompany/vacancies/create', views.MyVacancyCreate.as_view(), name='create_vacancy'),
+    path('mycompany/vacancies/<int:vacancy_id>/', views.MyVacancyEdit.as_view(), name='edit_vacancy'),
+    path('mycompany/vacancies/<int:vacancy_id>/sent', views.sent, name='sent'),
+    path('myresume/', views.MyResumeStartView.as_view(), name='my_resume'),
+    path('myresume/create', views.MyResumeCreate.as_view(), name='create_resume'),
+    path('myresume/edit', views.MyResumeEdit.as_view(), name='edit_resume'),
+    path('admin/', admin.site.urls),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

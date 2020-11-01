@@ -11,6 +11,7 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
+
 <body>
 <header class="container mt-3">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -32,13 +33,33 @@
                 </li>
             </ul>
             <ul class="navbar-nav col-2 justify-content-end">
-                <li class="nav-item active">
-                    <a href="/" class="nav-link font-weight-bold">Вход</a>
-                </li>
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item active">
+                        <div class="btn-group">
+                            <button type="button" class="btn dropdown-toggle font-weight-bold" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                {{ user.username }}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right mt-3">
+                                <a href="#" class="dropdown-item py-2">Профиль</a>
+                                <a href="{% url 'edit_resume' %}" class="dropdown-item py-2">Резюме</a>
+                                <a href="{% url 'edit_company' %}" class="dropdown-item py-2">Компания</a>
+                                <a href="{% url 'logout' %}" class="dropdown-item py-2">Выйти</a>
+                            </div>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="nav-item active">
+                        <a href="{% url 'login' %}" class="nav-link font-weight-bold">Вход</a>
+                    </li>
+                {% endif %}
+
+
             </ul>
         </div>
     </nav>
 </header>
+
 {% block body %}{% endblock %}
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

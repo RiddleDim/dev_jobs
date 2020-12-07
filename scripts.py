@@ -16,7 +16,7 @@ def add_specialties(spec_info: dict):
     for spec in spec_info:
         Specialty.objects.create(code=spec['code'],
                                  title=spec['title'],
-                                 picture=os.path.join(MEDIA_URL,
+                                 picture=os.path.join(
                                                       MEDIA_SPECIALITY_IMAGE_DIR,
                                                       'specty_backend.png')
                                  )
@@ -37,21 +37,29 @@ def add_vacancies(vacancies_info: dict):
 
 
 def add_companies(companies_info: dict):
-    for company in companies_info:
+    for pk, company in enumerate(companies_info, 1):
         Company.objects.create(name=company['title'],
                                city="Kyiv",
                                description="Good Company",
                                employee_count=20000,
-                               logo=os.path.join(MEDIA_URL,
+                               logo=os.path.join(
                                                  MEDIA_COMPANY_IMAGE_DIR,
                                                  'logo1.png'),
-                               owner=User.objects.get(pk=13)
+                               owner=User.objects.get(pk=pk)
 
                                )
+def add_users(user_count):
+    for i in range(user_count):
+        User.objects.create_user(username="John" + str(i),
+                                 password = '123')
 
 
 if __name__ == '__main__':
+    Company.objects.all().delete()
+    Specialty.objects.all().delete()
+    add_users(20)
+    add_companies(companies)
+    add_specialties(specialties)
     add_vacancies(jobs)
-    # add_companies(companies)
-    # add_specialties(specialties)
-    # Resume.objects.all().delete()
+
+

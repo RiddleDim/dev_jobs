@@ -11,8 +11,7 @@ from .forms import CreateCompanyForm, VacancyForm, ApplicationForm, MyResumeForm
 class MainPageView(View):
     def get(self, request):
         specialties = Specialty.objects.all().annotate(vac_count=Count('vacancies'))
-        companies = Company.objects.all().annotate(vac_count=Count('vacancies'),
-                                                   picture=F('logo'))
+        companies = Company.objects.all().annotate(vac_count=Count('vacancies'))
         fast_categories = ['Python', 'Flask', 'Django', 'DevOps', 'ML']
         context = {'specialties': specialties,
                    'fast_categories': fast_categories,
@@ -56,14 +55,14 @@ class VacancyView(View):
         return render(request, "vacancies/vacancy.html", context=context)
 
     def post(self, request, vacancy_id):
-        bound_form = ApplicationForm(request.POST)
-        if bound_form.is_valid():
-            unsaved_form = bound_form.save(commit=False)
-            unsaved_form.user = request.user
-            unsaved_form.vacancy = Vacancy.objects.get(pk=vacancy_id)
-            unsaved_form.save()
+        application_form = ApplicationForm(request.POST)
+        if application_form.is_valid():
+            application = application_form.save(commit=False)
+            application.user = request.user
+            application.vacancy = Vacancy.objects.get(pk=vacancy_id)
+            application.save()
             return redirect("sent", vacancy_id=vacancy_id)
-        context = {"form": bound_form}
+        context = {"form": application_form}
         messages.error(request, "Ошибка валидации")
         return render(request, "vacancies/vacancy.html", context=context)
 
@@ -80,14 +79,14 @@ class MyCompanyCreateView(LoginRequiredMixin, View):
         return render(request, "vacancies/company-edit.html", context=context)
 
     def post(self, request):
-        bound_form = CreateCompanyForm(request.POST)
-        if bound_form.is_valid():
-            unsaved_form = bound_form.save(commit=False)
-            unsaved_form.owner = request.user
-            unsaved_form.save()
+        company_form = CreateCompanyForm(request.POST, request.FILES)
+        if company_form.is_valid():
+            company = company_form.save(commit=False)
+            company.owner = request.user
+            company.save()
             messages.success(request, "Компания создана успешно")
             return redirect("edit_company")
-        context = {"form": bound_form}
+        context = {"form": company_form}
         messages.error(request, "Ошибка валидации")
         return render(request, "vacancies/company-edit.html", context=context)
 
@@ -97,19 +96,19 @@ class MyCompanyEdit(LoginRequiredMixin, View):
         try:
             company = request.user.company
         except Company.DoesNotExist:
-            return redirect("create_company")
+            return redirect("my_company")
         bound_form = CreateCompanyForm(instance=company)
         context = {'form': bound_form, 'company': company}
         return render(request, "vacancies/company-edit.html", context=context)
 
     def post(self, request):
         company = request.user.company
-        bound_form = CreateCompanyForm(request.POST, instance=company)
-        if bound_form.is_valid():
-            bound_form.save()
+        company_form = CreateCompanyForm(request.POST, request.FILES, instance=company)
+        if company_form.is_valid():
+            company_form.save()
             messages.success(request, "Информация обновлена успешно")
             return redirect("edit_company")
-        context = {"form": bound_form, 'company': company}
+        context = {"form": company_form, 'company': company}
         messages.error(request, "Ошибка валидации")
         return render(request, "vacancies/company-edit.html", context=context)
 
@@ -142,12 +141,12 @@ class MyVacancyEdit(LoginRequiredMixin, View):
     def post(self, request, vacancy_id):
         vacancy = Vacancy.objects.get(pk=vacancy_id)
         applications = Application.objects.filter(vacancy=vacancy)
-        bound_form = VacancyForm(request.POST, instance=vacancy)
-        if bound_form.is_valid():
-            bound_form.save()
+        vacancy_form = VacancyForm(request.POST, instance=vacancy)
+        if vacancy_form.is_valid():
+            vacancy_form.save()
             messages.success(request, "Информация обновлена успешно")
             return redirect("my_vacancies")
-        context = {"form": bound_form, 'vacancy': vacancy,
+        context = {"form": vacancy_form, 'vacancy': vacancy,
                    'show_applications': True, 'applications': applications}
         messages.error(request, "Ошибка валидации")
         return render(request, "vacancies/vacancy-edit.html", context=context)
@@ -160,14 +159,14 @@ class MyVacancyCreate(LoginRequiredMixin, View):
         return render(request, "vacancies/vacancy-edit.html", context=context)
 
     def post(self, request):
-        bound_form = VacancyForm(request.POST)
-        if bound_form.is_valid():
-            unsaved_form = bound_form.save(commit=False)
+        vacancy_form = VacancyForm(request.POST)
+        if vacancy_form.is_valid():
+            unsaved_form = vacancy_form.save(commit=False)
             unsaved_form.company = request.user.company
-            bound_form.save()
+            vacancy_form.save()
             messages.success(request, "Ваканасия успешно создана")
             return redirect("my_vacancies")
-        context = {"form": bound_form, "show_applications": False}
+        context = {"form": vacancy_form, "show_applications": False}
         messages.error(request, "Ошибка валидации")
         return render(request, "vacancies/vacancy-edit.html", context=context)
 
@@ -179,7 +178,7 @@ def sent(request, vacancy_id):
 
 
 class SearchView(View):
-    def get(self, request, query):
+    def get(self, request):
         search_query = request.GET.get('s')
         if search_query:
             vacancies = Vacancy.objects.filter(Q(title__icontains=search_query) |
@@ -205,14 +204,14 @@ class MyResumeCreate(LoginRequiredMixin, View):
         return render(request, "vacancies/resume-edit.html", context=context)
 
     def post(self, request):
-        bound_form = MyResumeForm(request.POST)
-        if bound_form.is_valid():
-            unsaved_form = bound_form.save(commit=False)
-            unsaved_form.user = request.user
-            unsaved_form.save()
+        resume_form = MyResumeForm(request.POST)
+        if resume_form.is_valid():
+            resume = resume_form.save(commit=False)
+            resume.user = request.user
+            resume.save()
             messages.success(request, "Резюме создано")
             return redirect("edit_resume")
-        context = {"form": bound_form}
+        context = {"form": resume_form}
         messages.error(request, "Ошибка валидации")
         return render(request, "vacancies/resume-edit.html", context=context)
 
@@ -223,20 +222,20 @@ class MyResumeEdit(LoginRequiredMixin, View):
             resume = request.user.resume
         except Resume.DoesNotExist:
             return redirect("create_resume")
-        bound_form = MyResumeForm(instance=resume)
-        context = {'form': bound_form}
+        resume_form = MyResumeForm(instance=resume)
+        context = {'form': resume_form}
         return render(request, "vacancies/resume-edit.html", context=context)
 
     def post(self, request):
         resume = request.user.resume
-        bound_form = MyResumeForm(request.POST, instance=resume)
-        if bound_form.is_valid():
-            unsaved_form = bound_form.save(commit=False)
-            unsaved_form.user = request.user
-            unsaved_form.save()
+        resume_form = MyResumeForm(request.POST, instance=resume)
+        if resume_form.is_valid():
+            resume = resume_form.save(commit=False)
+            resume.user = request.user
+            resume.save()
             messages.success(request, "Информация обновлена успешно")
             return redirect('edit_resume')
-        context = {"form": bound_form, 'resume': resume}
+        context = {"form": resume_form, 'resume': resume}
         messages.error(request, "Ошибка валидации")
         return render(request, "vacancies/resume-edit.html", context=context)
 

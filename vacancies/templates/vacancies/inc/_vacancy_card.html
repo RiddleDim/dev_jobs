@@ -5,7 +5,13 @@
                 <a href="{{ vacancy.get_absolute_url }}">
                     <h2 class="h2 pb-2">{{ vacancy }}</h2>
                 </a>
-                <p class="mb-2">{{ vacancy.skills }}</p>
+                <p class="mb-2">
+                    {% if vacancy.skills %}
+                        {{ vacancy.skills }}
+                    {% else %}
+                        Требования не указаны
+                    {% endif %}
+                </p>
                 <p>От {{ vacancy.salary_min }} до {{ vacancy.salary_max }} руб.</p>
                 <p class="text-muted pt-1">{{ vacancy.published_at|date:'j E' }}</p>
             </div>

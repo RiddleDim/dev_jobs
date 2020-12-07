@@ -1,7 +1,7 @@
 {% extends 'vacancies/base.html' %}
+{% load vacancies_tags %}
 
 {% block title %}Вакансии по специальностям - {{ block.super }}{% endblock %}
-{% load vacancies_tags %}
 {% block body %}
     <main class="container mt-3">
         {% back_button request=request %}
@@ -15,7 +15,7 @@
             <div class="row mt-5">
                 <div class="col-12 col-lg-8 offset-lg-2 m-auto">
                     {% for vacancy in vacancies %}
-                        {% include 'vacancies/inc/_vacancy_card.html' with vacancy=vacancy %}
+                        {% include 'vacancies/inc/_vacancy_card.html'%}
                     {% endfor %}
                 </div>
             </div>

@@ -14,7 +14,8 @@ class CreateCompanyForm(forms.ModelForm):
             'employee_count': forms.TextInput(attrs={"class": "form-control"}),
             'description': forms.Textarea(attrs={"class": "form-control",
                                                  "rows": 5,
-                                                 "style": "color:#00000"})
+                                                 "style": "color:#00000"}),
+            'logo': forms.FileInput(attrs={"class": "custom-file-input"})
         }
 
     def clean_name(self):
@@ -87,6 +88,12 @@ class MyResumeForm(forms.ModelForm):
             ('consider_offers', 'Рассматриваю предложения'),
             ('not_in_the_search', 'Не ищу работу')
         ]
+        SPECIALTY_CHOICE = [
+            ('frontend', 'Фронтенд-разработчик'),
+            ('backend', 'Бекенд-Разработчик'),
+            ('fullstack', 'Фулстек-разработчик'),
+
+        ]
         model = Resume
         fields = ['name', 'surname', 'status', 'grade',
                   'experience', 'salary', 'specialty', 'education', 'portfolio', ]
@@ -102,12 +109,13 @@ class MyResumeForm(forms.ModelForm):
                                                 "rows": 4
                                                 }),
             'salary': forms.TextInput(attrs={"class": "form-control"}),
-            'specialty': forms.TextInput(attrs={"class": "form-control"}),
+            'specialty': forms.Select(choices=SPECIALTY_CHOICE,
+                                      attrs={"class": "form-control"}),
             'education': forms.Textarea(attrs={"class": "form-control",
                                                "style": "color:#000",
                                                "rows": 4
                                                }),
-            'portfolio': forms.TextInput(attrs={"placeholder": "http://anylink.github.io",
+            'portfolio': forms.URLInput(attrs={"placeholder": "http://anylink.github.io",
                                                 "style": "color:#000",
                                                 "class": "form-control"}),
         }

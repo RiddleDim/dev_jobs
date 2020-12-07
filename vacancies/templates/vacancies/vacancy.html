@@ -1,64 +1,67 @@
 {% extends 'vacancies/base.html' %}
+{% load vacancies_tags %}
 
+{% block title %} {{ vacancy }} - {{ block.super }}{% endblock %}
 
 {% block body %}
     <main class="container mt-3 pb-5">
+        <div>
+            {% include 'inc/_check_messages.html' %}
+        </div>
         <div class="row mt-5">
-            <div class="col-12 col-lg-2">
-                {% include 'vacancies/inc/_back.html' %}
+            {% back_button request=request %}
+        </div>
+        <div class="col-12 col-lg-8">
+            <div>
+                {% include 'inc/_check_messages.html' %}
             </div>
-            <div class="col-12 col-lg-8">
-                <div>
-                    {% include 'inc/_check_messages.html' %}
+            <section class="pl-3">
+                <a href="{{ vacancy.company.get_absolute_url }}"><img src="{{ vacancy.company.logo }}" width="130"
+                                                                      height="80" alt=""></a>
+                <div class="d-flex align-items-baseline align-content-baseline">
+                    <h1 class="h2 mt-4 font-weight-bold">{{ vacancy }}</h1>
+                    <p class="m-0 pl-5">{{ vacancy.salary_min }}–{{ vacancy.salary_max }}P</p>
                 </div>
-                <section class="pl-3">
-                    <a href="{{ vacancy.company.get_absolute_url }}"><img src="{{ vacancy.company.logo }}" width="130"
-                                                                          height="80" alt=""></a>
-                    <div class="d-flex align-items-baseline align-content-baseline">
-                        <h1 class="h2 mt-4 font-weight-bold">{{ vacancy }}</h1>
-                        <p class="m-0 pl-5">{{ vacancy.salary_min }}–{{ vacancy.salary_max }}P</p>
-                    </div>
-                    <p class="mt-2">{{ vacancy.skills }}</p>
-                    <p class="text-muted mb-4">{{ vacancy.company }} (15-30 человек), Киев или удаленно</p>
-                    <div style="line-height: 1.8;">
-                        <p>{{ vacancies.description }}</p>
-                    </div>
-                    <form method="post" class="card mt-4 mb-3">
-                        {% csrf_token %}
-                        {{ form.non_field.errors }}
-                        <div class="card-body mx-3">
-                            <p class="h5 mt-3 font-weight-normal">Отозваться на вакансию</p>
-                            <div class="form-group">
-                                <label class="mb-1 mt-2" for="{{ form.written_username.id_for_label }}">Вас
-                                    зовут</label>
-                                {{ form.written_username }}
-                            </div>
-                            <div class="errors">
-                                {{ form.written_username.errors }}
-                            </div>
-
-                            <div class="form-group">
-                                <label class="mb-1" for="{{ form.written_phone.id_for_label }}">Ваш телефон</label>
-                                {{ form.written_phone }}
-                            </div>
-                            <div class="errors">
-                                {{ form.written_phone.errors }}
-                            </div>
-
-                            <div class="form-group">
-                                <label class="mb-1" for="{{ form.written_cover_letter.id_for_label }}">Сопроводительное
-                                    письмо</label>
-                                {{ form.written_cover_letter }}
-                            </div>
-                            <div class="errors">
-                                {{ form.written_cover_letter.errors }}
-                            </div>
-
-                            <input type="submit" class="btn btn-primary mt-4 mb-2" value="Отправить отклик">
+                <p class="mt-2">{{ vacancy.skills }}</p>
+                <p class="text-muted mb-4">{{ vacancy.company }} (15-30 человек), Киев или удаленно</p>
+                <div style="line-height: 1.8;">
+                    <p>{{ vacancies.description }}</p>
+                </div>
+                <form method="post" class="card mt-4 mb-3">
+                    {% csrf_token %}
+                    {{ form.non_field.errors }}
+                    <div class="card-body mx-3">
+                        <p class="h5 mt-3 font-weight-normal">Отозваться на вакансию</p>
+                        <div class="form-group">
+                            <label class="mb-1 mt-2" for="{{ form.written_username.id_for_label }}">Вас
+                                зовут</label>
+                            {{ form.written_username }}
                         </div>
-                    </form>
-                </section>
-            </div>
+                        <div class="errors">
+                            {{ form.written_username.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="mb-1" for="{{ form.written_phone.id_for_label }}">Ваш телефон</label>
+                            {{ form.written_phone }}
+                        </div>
+                        <div class="errors">
+                            {{ form.written_phone.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="mb-1" for="{{ form.written_cover_letter.id_for_label }}">Сопроводительное
+                                письмо</label>
+                            {{ form.written_cover_letter }}
+                        </div>
+                        <div class="errors">
+                            {{ form.written_cover_letter.errors }}
+                        </div>
+
+                        <input type="submit" class="btn btn-primary mt-4 mb-2" value="Отправить отклик">
+                    </div>
+                </form>
+            </section>
         </div>
     </main>
 {% endblock %}

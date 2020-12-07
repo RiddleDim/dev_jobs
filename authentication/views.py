@@ -30,7 +30,6 @@ class UserLogin(View):
             user = form.get_user()
             login(request, user)
             return redirect('home')
-        print(form.errors)
         messages.error(request, "Ошибка входа")
         return render(request, 'authentication/login.html', {'form': form})
 
